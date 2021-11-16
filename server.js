@@ -8,34 +8,38 @@ var spotifyApi = new SpotifyWebApi({
     //redirectUri: 'http://www.example.com/callback'
 });
 
-spotifyApi.clientCredentialsGrant().
-    then(function (result) {
+return spotifyApi.clientCredentialsGrant().then(
+    function (result) {
+
         spotifyApi.setAccessToken(result.body['access_token']);
+
+        console.log('The access token expires in ' + result.body['expires_in']);
+        console.log('The access token is ' + result.body['access_token']);
 
         var userInput = 'slice the cake';
         var artistURI;
 
-         spotifyApi.searchArtists(userInput).then(function (data) {
+        spotifyApi.searchArtists(userInput).then(function (data) {
             console.log(data.body);
             artistURI = data.body.artists.items[0].id;
             console.log(artistURI);
 
-        }, function(err) {
+        }, function (err) {
             console.error(err);
+        }).then(function (value) {//#######
+
+            spotifyApi.getArtistAlbums(artistURI, 'US').then(
+                function (data) {
+                    console.log('Artist albums', data.body);
+
+                },
+                function (err) {
+                    console.error(err);
+                }
+            );
+        }).catch(function (err) {
+            console.log('somethings fucked man');
+            console.log('Hint: ');
+            console.log(err);
         });
-
-        return spotifyApi.getArtistAlbums(artistURI,'US').then(
-            function (data) {
-                console.log('Artist albums', data.body);
-                
-            },
-            function (err) {
-                console.error(err);
-            }
-        );
-
-    }).catch(function (err) {
-        console.log('somethings fucked man');
-        console.log('Hint: ');
-        console.log(err);
     });
