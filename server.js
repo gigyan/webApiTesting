@@ -1,45 +1,64 @@
-var SpotifyWebApi = require('spotify-web-api-node');
-var token;
+var express = require('express');
+var app = express();
 
-// credentials are optional
+var SpotifyWebApi = require('spotify-web-api-node');
+
+//App credentials
 var spotifyApi = new SpotifyWebApi({
-    clientId: '4c6ad1d4aec64c6788d2a80f1c3bfb77',
-    clientSecret: 'b2cecac97b384ea9aa9b00cda8e90037',
-    //redirectUri: 'http://www.example.com/callback'
+  clientId : '9705e2cc158043b19015ce7b233efb17' ,
+  clientSecret : 'c1317994b8cd42779f82470d11f5557f'
 });
 
-return spotifyApi.clientCredentialsGrant().then(
-    function (result) {
+// Authenticate our app with Spotify
+spotifyApi.clientCredentialsGrant()
+  .then(function(data) {
+    console.log('The access token expires in ' + data.body['expires_in']);
+    console.log('The access token is ' + data.body['access_token']);
 
-        spotifyApi.setAccessToken(result.body['access_token']);
+    // Save the access token so that it's used in future calls
+    spotifyApi.setAccessToken(data.body['access_token']);
+  }, function(err) {
+    console.log('Something went wrong when retrieving an access token', err.message);
+  });
 
-        console.log('The access token expires in ' + result.body['expires_in']);
-        console.log('The access token is ' + result.body['access_token']);
 
-        var userInput = 'slice the cake';
-        var artistURI;
+app.use(express.static('public'));
 
-        spotifyApi.searchArtists(userInput).then(function (data) {
-            console.log(data.body);
-            artistURI = data.body.artists.items[0].id;
-            console.log(artistURI);
 
-        }, function (err) {
-            console.error(err);
-        }).then(function (value) {//#######
+app.get("/", function (request, response) {
+  response.sendFile(__dirname + '/views/index.html');
+});
 
-            spotifyApi.getArtistAlbums(artistURI, 'US').then(
-                function (data) {
-                    console.log('Artist albums', data.body);
+app.get("/search", function (request, response) {
+  
+  let query = request.query.query;
+  let artistURI= '';
+  
+   //Search for artists using the query parameter on the request
+   spotifyApi.searchArtists(query)
+   .then(function(data) {
+   console.log('searchArtists',data)
+     artistURI = data.body.artists.items[0].id; 
+   }).then(function(result){  
+    
+    spotifyApi.getArtistTopTracks(artistURI, 'US').then(
+      function (data) {
+          response.send(data);
 
-                },
-                function (err) {
-                    console.error(err);
-                }
-            );
-        }).catch(function (err) {
-            console.log('somethings fucked man');
-            console.log('Hint: ');
-            console.log(err);
-        });
-    });
+      },
+      function (err) {
+          console.error(err);
+      }
+  );
+ 
+  
+  });  
+   
+});
+
+// listen for requests :)
+var listener = app.listen(process.env.PORT, function () {
+  console.log('Your app is listening on port ' + listener.address().port);
+});
+
+
