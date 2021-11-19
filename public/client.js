@@ -18,8 +18,6 @@ $(function() {
              let name = data.body.tracks[i].name;
             $('#results').append($('<p>' + name + '</p>'));
         }
-        
-        //Get the first ID from the JSON object
          
       
     });

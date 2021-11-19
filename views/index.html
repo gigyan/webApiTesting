@@ -1,35 +1,47 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Spotify Quicksearch</title>
-    <meta name="description" content="A cool thing made with Glitch">
-    <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
+    <title>Artist Top Song Search</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    
+    <style>
+      #grad1 {
+        height: 750px;
+        background-image: linear-gradient(limeGreen, grey);
+      }
+      </style>
   </head>
   <body>
+   <div id="grad1">
+    
     <header>
-      <h1>
+      <h1 class="text-center">
         Spotify Search for Artist
       </h1>
     </header>
   <main>
-      <p>Search for an artist on Spotify:</p>
-      <form>
-        <input required type="text" maxlength="100" placeholder="Search query">
-        <button type="submit">Submit</button>
+      <p class="text-center">Search for an artist on Spotify:</p>
+      <form class="text-center">
+        <input required type="text"  placeholder="Search query">
+        <button type="submit" class="btn btn-dark">Submit</button>
       </form>
-      <section id="results">
+      <section  id="results">
       </section>
     </main>
+
+  </div>
 
     <!-- Your web-app is https, so your scripts need to be too -->
     <script src="https://code.jquery.com/jquery-2.2.1.min.js"
             integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
             crossorigin="anonymous"></script>
     <script src="/client.js"></script>
-
+  
   </body>
+  
+
 </html>
